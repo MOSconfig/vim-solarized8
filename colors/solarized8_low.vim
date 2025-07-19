@@ -16,6 +16,39 @@ let hs_highlight_delimiters=1
 
 let s:t_Co = has('gui_running') ? 16777216 : str2nr(&t_Co)
 
+let s:none = ['NONE', 'NONE']
+let s:red = ['#FF0000', 100]
+let s:underline = 'underline,'
+
+function! s:HL(group, fg, ...)
+  let fg = a:fg
+  if a:0 >= 1
+    let bg = a:1
+  else
+    let bg = s:none
+  endif
+
+  if a:0 >= 2 && strlen(a:2)
+    let emstr = a:2
+  else
+    let emstr = 'NONE,'
+  endif
+
+  let histring = [ 'hi', a:group,
+        \ 'guifg=' . fg[0], 'ctermfg=' . fg[1],
+        \ 'guibg=' . bg[0], 'ctermbg=' . bg[1],
+        \ 'gui=' . emstr[:-2], 'cterm=' . emstr[:-2]
+        \ ]
+
+  if a:0 >= 3
+    call add(histring, 'guisp=' . a:3[0])
+  endif
+  execute join(histring, ' ')
+endfunction
+
+call s:HL('SyntasticError', s:red, s:none, s:underline, s:red)
+call s:HL('SyntasticWarning', s:red, s:none, s:underline, s:red)
+
 hi! link Boolean Constant
 hi! link Character Constant
 hi! link Conditional Statement
